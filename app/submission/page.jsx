@@ -13,11 +13,6 @@ const sampleImage = '/images/corgi.jpg';
 
 const ctx = getNetlifyContext();
 const forceWebP = ctx === 'dev';
-const sampleImageSrcSet = [320, 640, 1024]
-    .map((size) => {
-        return `/.netlify/images?url=${sampleImage}&w=${size}${forceWebP ? '&fm=webp' : ''} ${size}w`;
-    })
-    .join(', ');
 
 const nextImageSnippet = `
 When running on Netlify, \`next/image\` is automatically set-up to use Netlify Image CDN for optimized images.
@@ -52,6 +47,15 @@ In local development, optimization is performed locally without automatic format
 detection, so format is set to WebP.
 `;
 
+const site = 'https://collagery.netlify.app';
+
+const getImageUrl = (name) =>
+    [320, 640, 1024]
+        .map((size) => {
+            return `${site}/.netlify/images?url=${name}&w=${size}${forceWebP ? '&fm=webp' : ''} ${size}w`;
+        })
+        .join(', ');
+
 export default function Page() {
     const imageKeys = useMemo(() => [...Array(17).keys()].slice(1), []);
 
@@ -73,16 +77,22 @@ export default function Page() {
                 <div className="carousel carousel-center w-full p-4 space-x-4 bg-neutral rounded-box overflow-x-auto">
                     {imageKeys.map((key) => (
                         <div className="carousel-item h-28 w-40" key={key}>
-                            <Image
+                            <img
+                                srcSet={getImageUrl(`${key}.jpg`)}
+                                sizes="(max-width: 1024px) 100vw, 1024px"
+                                className="max-h-28 w-40 rounded-xl"
+                                alt={key}
+                            />
+                            {/* <Image
                                 key={key}
                                 className=" max-h-28 w-40 rounded-xl"
-                                src={`.netlify/images/${key}.jpg`}
+                                src={`/images/${key}.jpg`}
                                 priority
                                 width={80}
                                 height={90}
                                 sizes="200px"
                                 alt={key}
-                            />
+                            /> */}
                         </div>
                     ))}
                 </div>
@@ -167,17 +177,15 @@ export default function Page() {
                 <div className="diff aspect-[3/2] rounded-lg border-2 border-white mt-8">
                     <div className="diff-item-1">
                         <div>
-                            <ImageWithSizeOverlay
+                            {/* <ImageWithSizeOverlay
                                 srcSet={sampleImageSrcSet}
                                 sizes={sampleImageSrcSet}
                                 overlayPosition="right"
-                            />
+                            /> */}
                         </div>
                     </div>
                     <div className="diff-item-2">
-                        <div>
-                            <ImageWithSizeOverlay src="/images/corgi.jpg" />
-                        </div>
+                        <div>{/* <ImageWithSizeOverlay src="/images/corgi.jpg" /> */}</div>
                     </div>
                     <div className="diff-resizer"></div>
                 </div>

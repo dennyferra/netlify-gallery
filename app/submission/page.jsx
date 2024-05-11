@@ -52,7 +52,7 @@ const site = 'https://collagery.netlify.app';
 const getImageUrl = (name) =>
     [320, 640, 1024]
         .map((size) => {
-            return `${site}/.netlify/images?url=${name}&w=${size}${forceWebP ? '&fm=webp' : ''} ${size}w`;
+            return `${site}/.netlify/images?url=images/${name}&w=${size}${forceWebP ? '&fm=webp' : ''} ${size}w`;
         })
         .join(', ');
 

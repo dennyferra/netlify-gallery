@@ -4,6 +4,7 @@ import { getNetlifyContext } from 'utils';
 import { ImageWithSizeOverlay } from './image-with-size-overlay';
 import { ContextAlert } from 'components/context-alert';
 import { useMemo } from 'react';
+import { ImageSelector } from './components/imageSelector';
 
 export const metadata = {
     title: 'Netlify Submission'
@@ -47,18 +48,7 @@ In local development, optimization is performed locally without automatic format
 detection, so format is set to WebP.
 `;
 
-const site = 'https://collagery.netlify.app';
-
-const getImageUrl = (name) =>
-    [320, 640, 1024]
-        .map((size) => {
-            return `${site}/.netlify/images?url=images/${name}&w=${size}${forceWebP ? '&fm=webp' : ''} ${size}w`;
-        })
-        .join(', ');
-
 export default function Page() {
-    const imageKeys = useMemo(() => [...Array(17).keys()].slice(1), []);
-
     return (
         <div className="flex flex-col gap-6 sm:gap-12">
             <section className="flex flex-col items-start gap-6 sm:gap-8">
@@ -72,54 +62,7 @@ export default function Page() {
                     <span className="block text-sm font-normal tracking-wide">(collage gallery)</span>
                 </h1>
             </section>
-            <section className="flex flex-col gap-4">
-                <h2 className="text-2xl font-bold sm:text-2xl">Select Image</h2>
-                <div className="carousel carousel-center w-full p-4 space-x-4 bg-neutral rounded-box overflow-x-auto">
-                    {imageKeys.map((key) => (
-                        <div className="carousel-item h-28 w-40" key={key}>
-                            <img
-                                srcSet={getImageUrl(`${key}.jpg`)}
-                                sizes="(max-width: 1024px) 100vw, 1024px"
-                                className="max-h-28 w-40 rounded-xl"
-                                alt={key}
-                            />
-                            {/* <Image
-                                key={key}
-                                className=" max-h-28 w-40 rounded-xl"
-                                src={`/images/${key}.jpg`}
-                                priority
-                                width={80}
-                                height={90}
-                                sizes="200px"
-                                alt={key}
-                            /> */}
-                        </div>
-                    ))}
-                </div>
-                <div className="flex w-full bg-slate-950 rounded-xl p-2 gap-x-2 items-stretch">
-                    <div className="w-1/3 h-64 bg-slate-900 rounded-xl p-2 border-dashed border-white border-2 flex items-center justify-center">
-                        Image Preview
-                    </div>
-                    <div className="flex flex-col items-stretch w-2/3 h-auto bg-slate-800 rounded-xl p-2">
-                        <div>Settings</div>
-                        <div className="flex justify-between items-start h-full flex-col md:flex-row">
-                            <div className="w-32">Column: 1</div>
-                            <div className="w-32">
-                                Width
-                                <br /> 1 col, 2 col
-                            </div>
-                            <div className="w-32">
-                                Height
-                                <br /> full, half
-                            </div>
-                        </div>
-                        <div className="flex gap-2 justify-center">
-                            <button className="btn btn-sm btn-primary">Add Image</button>
-                            <button className="btn btn-sm btn-warning">Remove Last</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <ImageSelector />
             <section className="flex flex-col gap-4">
                 <h2 className="text-2xl font-bold sm:text-2xl">Your Collagery</h2>
                 <div className="h-[400px] w-full max-w-full bg-slate-900 rounded-xl grid grid-cols-2 gap-1 p-2">

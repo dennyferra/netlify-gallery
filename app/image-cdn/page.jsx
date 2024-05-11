@@ -12,7 +12,7 @@ const sampleImage = '/images/corgi.jpg';
 
 const ctx = getNetlifyContext();
 const forceWebP = ctx === 'dev';
-const sampleImageSrcSet = [640, 1280, 2048]
+const sampleImageSrcSet = [320, 640, 1024]
     .map((size) => {
         return `/.netlify/images?url=${sampleImage}&w=${size}${forceWebP ? '&fm=webp' : ''} ${size}w`;
     })

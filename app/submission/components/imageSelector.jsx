@@ -1,24 +1,15 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { getNetlifyContext } from 'utils';
+import { getImageUrl } from 'utils';
 
-const ctx = getNetlifyContext();
-const forceWebP = true;
-
-const site = 'https://collagery.netlify.app';
-const getImageUrl = (name, quality = 80) =>
-    [160, 360, 1024]
-        .map((size) => {
-            return `${site}/.netlify/images?url=images/${name}&w=${size}&q=${quality}${
-                forceWebP ? '&fm=webp' : ''
-            } ${size}w`;
-        })
-        .join(', ');
-
-export function ImageSelector() {
+export function ImageSelector({ onAdd, onClear }) {
     const [selected, setSelected] = useState(null);
     const imageKeys = useMemo(() => [...Array(17).keys()].slice(1), []);
+    const [form, setForm] = useState({ width: 1, height: 1, quality: 90 });
+
+    const handleAdd = () => onAdd?.({ selected, ...form });
+    const handleClear = () => onClear?.();
 
     return (
         <section className="flex flex-col gap-4">
@@ -29,7 +20,9 @@ export function ImageSelector() {
                         <img
                             srcSet={getImageUrl(`${key}.jpg`)}
                             sizes="(max-width: 100vw) 160px, 160px"
-                            className="max-h-28 w-40 rounded-xl"
+                            className={`max-h-28 w-40 rounded-xl cursor-pointer ${
+                                selected === key ? 'border-2 border-blue-500' : 'border border-neutral'
+                            }`}
                             alt={key}
                             onClick={() => setSelected(key)}
                         />
@@ -52,19 +45,51 @@ export function ImageSelector() {
                 <div className="flex flex-col items-stretch w-2/3 h-auto bg-slate-800 rounded-xl p-2">
                     <div>Settings</div>
                     <div className="flex justify-between items-start h-full flex-col md:flex-row">
-                        <div className="w-32">Column: 1</div>
                         <div className="w-32">
                             Width
-                            <br /> 1 col, 2 col
+                            <br />
+                            <select
+                                value={form.width}
+                                onChange={(e) => setForm({ ...form, width: Number(e.target.value) })}
+                                className="select select-sm bg-blue-900"
+                            >
+                                <option value={1}>1 Column</option>
+                                <option value={2}>2 Column</option>
+                            </select>
                         </div>
                         <div className="w-32">
                             Height
-                            <br /> full, half
+                            <br />
+                            <select
+                                value={form.height}
+                                onChange={(e) => setForm({ ...form, height: Number(e.target.value) })}
+                                className="select select-sm bg-blue-900"
+                            >
+                                <option value={1}>Full</option>
+                                {form.width !== 2 ? <option value={2}>Half</option> : null}
+                            </select>
+                        </div>
+                        <div className="w-32">
+                            Quality
+                            <br />
+                            <input
+                                className="input input-sm bg-blue-900"
+                                type="number"
+                                step="1"
+                                min="10"
+                                max="100"
+                                value={form.quality}
+                                onChange={(e) => setForm({ ...form, quality: Number(e.target.value) })}
+                            />
                         </div>
                     </div>
                     <div className="flex gap-2 justify-center">
-                        <button className="btn btn-sm btn-primary">Add Image</button>
-                        <button className="btn btn-sm btn-warning">Remove Last</button>
+                        <button className="btn btn-sm btn-primary" disabled={!selected} onClick={handleAdd}>
+                            Add to Collagery
+                        </button>
+                        <button className="btn btn-sm btn-warning" onClick={handleClear}>
+                            Clear Collagery
+                        </button>
                     </div>
                 </div>
             </div>

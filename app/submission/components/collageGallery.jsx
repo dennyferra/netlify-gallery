@@ -89,8 +89,9 @@ export function CollageGallery() {
                         }
 
                         if (cell.width) {
+                            const colSpan = cell.width === 2 ? 'col-span-2' : '';
                             return (
-                                <div key={idx} className={`col-span-${cell.width} relative group`}>
+                                <div key={idx} className={`${colSpan} relative group`}>
                                     <ImageDetails id={cell.image} />
                                     <img
                                         srcSet={getImageUrl(cell.image + '.jpg', {
